@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!--绑定一个Dao/Mapper接口-->
-<mapper namespace="com.dddj.dao.UserDao">
+<mapper namespace="com.dddj.dao.UserMapper">
 <!--    select,查询语句,resultType代表类型，resultMap代表集合-->
     <select id="getUserList" resultType="com.dddj.pojo.User">
             select * from mybatis.user
