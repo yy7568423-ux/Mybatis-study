@@ -10,6 +10,10 @@
             select * from mybatis.user
             </select>
 
+    <select id="getUserLike" resultType="com.dddj.pojo.User">
+        select * from mybatis.user where name like "%"#{value}"%"
+    </select>
+
     <select id="getUserById" parameterType="int" resultType="com.dddj.pojo.User">
             select * from mybatis.user where id = #{id}
             </select>
@@ -25,4 +29,12 @@
     <delete id="deleteUser" parameterType="int">
             delete from mybatis.user where id = #{id}
             </delete>
+
+<!--传递map的key-->
+    <insert id="addUser2"  parameterType="map">
+        insert into mybatis.user (id, name, pwd) values (#{userid}, #{userName}, #{password})
+    </insert>
+    <delete id="deleteUserByMap" parameterType="map">
+        delete from mybatis.user where id = #{userid}
+    </delete>
 </mapper>
