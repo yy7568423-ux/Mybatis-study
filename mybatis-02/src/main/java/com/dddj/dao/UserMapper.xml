@@ -5,8 +5,8 @@
 
 <!--绑定一个Dao/Mapper接口-->
 <mapper namespace="com.dddj.dao.UserMapper">
-<!--<select id="getUserList" resultType="User">-->
-    <select id="getUserList" resultType="user">
+<select id="getUserList" resultType="User">
+<!--    <select id="getUserList" resultType="user">-->
         select * from mybatis.user
     </select>
 

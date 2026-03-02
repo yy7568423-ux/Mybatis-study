@@ -8,9 +8,9 @@
     <properties resource="db.properties"/>
 <!--给实体类起别名-->
     <typeAliases>
-<!--        <typeAlias type="com.dddj.pojo.User" alias="User"/>-->
+        <typeAlias type="com.dddj.pojo.User" alias="User"/>
 <!--通过包起别名，扫描实体类包，默认别名为类名，首字母小写,需要在实体类通过注解指定别名-->
-        <package name="com.dddj.pojo"/>
+<!--        <package name="com.dddj.pojo"/>-->
     </typeAliases>
 
 
