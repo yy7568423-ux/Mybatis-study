@@ -1079,14 +1079,14 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-03-01.03:37:08</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-03-02.03:12:43</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="290" parent="1" name="mysql">
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Grants>user|||mysql.session|localhost|SELECT|G</Grants>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-03-01.00:27:16</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-03-02.03:12:43</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="291" parent="1" name="performance_schema">
