@@ -5,11 +5,12 @@
 
 <!--绑定一个Dao/Mapper接口-->
 <mapper namespace="com.dddj.dao.UserMapper">
-    <select id="getUserList" resultType="com.dddj.pojo.User">
+<!--<select id="getUserList" resultType="User">-->
+    <select id="getUserList" resultType="user">
         select * from mybatis.user
     </select>
 
-    <select id="getUserById" parameterType="int" resultType="com.dddj.pojo.User">
+    <select id="getUserById" parameterType="int" resultType="user">
         select * from mybatis.user where id = #{id}
     </select>
 

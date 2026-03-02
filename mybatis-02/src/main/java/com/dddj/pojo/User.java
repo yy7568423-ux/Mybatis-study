@@ -1,10 +1,13 @@
 package com.dddj.pojo;
 
+import org.apache.ibatis.type.Alias;
+
 /**
  * @author DDDJ
  **/
 
 //实体类
+//@Alias("hello")
 public class User {
     private int id;
     private String name;
