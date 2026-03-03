@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+status: 控制 Log4j 自身的日志级别（WARN 避免输出过多框架日志）
+monitorInterval: 自动检测配置文件修改并热加载（单位：秒，无需重启应用）
+-->
+<Configuration status="WARN" monitorInterval="30">
+    <!-- 全局参数配置（可复用） -->
+    <Properties>
+        <!-- 日志文件根目录（可改为绝对路径，如 D:/app-logs/） -->
+        <Property name="LOG_BASE_DIR">logs</Property>
+        <!-- 日志编码 -->
+        <Property name="LOG_CHARSET">UTF-8</Property>
+        <!-- 通用日志格式：时间 | 线程 | 级别 | 类名 | 日志内容 | 异常堆栈 -->
+        <Property name="COMMON_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} | %t | %-5level | %logger{60} | %msg | %ex{full}%n</Property>
+        <!-- 简化日志格式（控制台用） -->
+        <Property name="SIMPLE_PATTERN">%d{HH:mm:ss.SSS} [%t] %-5level %logger{30} - %msg%n</Property>
+    </Properties>
+
+    <!-- 1. 输出目的地（Appenders）：覆盖所有常用场景 -->
+    <Appenders>
+        <!-- 1.1 控制台输出（开发环境用） -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <!-- 控制台日志编码 -->
+            <PatternLayout charset="${LOG_CHARSET}" pattern="${SIMPLE_PATTERN}"/>
+            <!-- 过滤器：改为DEBUG，允许输出MyBatis的SQL日志 -->
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+
+        <!-- 1.2 全量日志文件（按天+大小滚动，保留30天） -->
+        <RollingFile name="AllFileAppender"
+                     fileName="${LOG_BASE_DIR}/all.log"
+                     filePattern="${LOG_BASE_DIR}/history/all-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 日志编码 + 完整格式（包含异常堆栈） -->
+            <PatternLayout charset="${LOG_CHARSET}" pattern="${COMMON_PATTERN}"/>
+            <!-- 触发滚动条件 -->
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/> <!-- 按天滚动 -->
+                <SizeBasedTriggeringPolicy size="200 MB"/>                <!-- 单文件最大200MB -->
+            </Policies>
+            <!-- 滚动策略：保留30天日志，最多50个文件，自动压缩为gz -->
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${LOG_BASE_DIR}/history" maxDepth="1">
+                    <IfFileName glob="all-*.log.gz"/>
+                    <IfLastModified age="30d"/> <!-- 删除30天前的日志 -->
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- 1.3 错误日志单独拆分（只记录ERROR/FATAL级别，便于排查问题） -->
+        <RollingFile name="ErrorFileAppender"
+                     fileName="${LOG_BASE_DIR}/error.log"
+                     filePattern="${LOG_BASE_DIR}/history/error-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout charset="${LOG_CHARSET}" pattern="${COMMON_PATTERN}"/>
+            <!-- 过滤器：只输出ERROR及以上级别 -->
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="50 MB"/> <!-- 错误日志文件更小 -->
+            </Policies>
+            <DefaultRolloverStrategy max="90"> <!-- 错误日志保留90天 -->
+                <Delete basePath="${LOG_BASE_DIR}/history" maxDepth="1">
+                    <IfFileName glob="error-*.log.gz"/>
+                    <IfLastModified age="90d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- 1.4 业务日志（自定义包名，便于单独排查业务问题） -->
+        <RollingFile name="BusinessAppender"
+                     fileName="${LOG_BASE_DIR}/business.log"
+                     filePattern="${LOG_BASE_DIR}/history/business-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout charset="${LOG_CHARSET}" pattern="${COMMON_PATTERN}"/>
+            <!-- 只记录业务包的日志（替换为你的实际业务包名） -->
+            <Filters>
+                <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="FATAL" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="60"/>
+        </RollingFile>
+    </Appenders>
+
+    <!-- 2. 日志记录器（Loggers）：精准控制不同模块日志级别 -->
+    <Loggers>
+        <!-- 2.1 第三方框架日志控制（降低冗余） -->
+        <!-- MyBatis 日志级别：改为DEBUG，强制输出SQL日志 -->
+        <Logger name="org.apache.ibatis" level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AllFileAppender"/>
+        </Logger>
+        <!-- Spring 框架日志级别：WARN 避免过多启动日志 -->
+        <Logger name="org.springframework" level="WARN" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AllFileAppender"/>
+        </Logger>
+
+        <!-- 2.2 自定义业务包日志（替换为你的实际包名） -->
+        <Logger name="com.dddj" level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>    <!-- 控制台输出 -->
+            <AppenderRef ref="AllFileAppender"/>     <!-- 全量文件 -->
+            <AppenderRef ref="ErrorFileAppender"/>   <!-- 错误日志单独记录 -->
+            <AppenderRef ref="BusinessAppender"/>    <!-- 业务日志单独拆分 -->
+        </Logger>
+
+        <!-- 2.3 DAO层日志（单独控制，便于调试SQL） -->
+        <Logger name="com.dddj.dao" level="DEBUG" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AllFileAppender"/>
+        </Logger>
+
+        <!-- 2.4 根日志器（全局默认配置） -->
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>  <!-- 控制台 -->
+            <AppenderRef ref="AllFileAppender"/>   <!-- 全量文件 -->
+            <AppenderRef ref="ErrorFileAppender"/> <!-- 错误日志 -->
+        </Root>
+    </Loggers>
+</Configuration>
