@@ -5,22 +5,29 @@
 
 
 <mapper namespace="com.dddj.dao.UserMapper">
+<!--结果映射-->
 <!--方法一-->
 <!--<select id="getUserList" resultType="User">-->
 <!--        select id, name, pwd,pwd as password from mybatis.user-->
 <!--    </select>-->
-    
 <!--方法二-->
 <!--property:实体类属性，column:字段名-->
     <resultMap id="UserMap" type="User">
-<!--        <id property="id" column="id"/>-->
-<!--        <result property="name" column="name"/>-->
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
         <result property="password" column="pwd"/>
     </resultMap>
 
     <select id="getUserList" resultMap="UserMap">
         select * from mybatis.user
+    </select>
 
+    <select id="getUserByLimit" parameterType="map" resultType="User" resultMap="UserMap">
+            select * from mybatis.user limit #{startIndex} , #{pageSize}
+    </select>
+
+    <select id="getUserByRowBounds" resultMap="UserMap">
+        select * from mybatis.user
     </select>
 
 </mapper>
