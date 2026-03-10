@@ -49,9 +49,25 @@ public class MyTest {
         HashMap<String, Object> map = new HashMap<>();
         map.put("title","Spring如此简单");
         map.put("author","狂神说");
-        List<Blog> blogs = mapper.queryBlogIF(map);
+        map.put("views",9999);
+        List<Blog> blogs = mapper.queryBlogChoose(map);
         for (Blog blog : blogs) {
             System.out.println(blog);
         }
     }
+
+    @Test
+    public void undataBlog(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        BlogMapper mapper = sqlSession.getMapper(BlogMapper.class);
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("title","Spring如此简单2");
+        map.put("author","狂神说");
+        map.put("id","bfe67f086f864eed8f5e387bd08256ad");
+        mapper.updateBlog( map);
+        sqlSession.close();
+
+
+    }
+
 }

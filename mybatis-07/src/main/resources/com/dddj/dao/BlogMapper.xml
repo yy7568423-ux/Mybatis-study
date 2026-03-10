@@ -10,18 +10,48 @@
     </insert>
     
     <select id="queryBlogIF" parameterType="map" resultType="Blog">
-        select * from mybatis.blog where 1=1
+        select * from mybatis.blog
+        <where>
         <if test="title != null">
             and title = #{title}
         </if>
         <if test="author != null">
             and author = #{author}
         </if>
+        </where>
+    </select>
+
+<!--相当于swicth case，如果满足一个，则不再向下执行，都不满足则执行otherwise -->
+    <select id="queryBlogChoose" parameterType="map" resultType="Blog">
+        select * from mybatis.blog
+        <where>
+        <choose>
+            <when test="title != null">
+                title = #{title}
+            </when>
+            <when test="author != null">
+                and author = #{author}
+            </when>
+            <otherwise>
+                and views = #{views}
+            </otherwise>
+        </choose>
+        </where>
+
     </select>
     
-    <select id="queryBlogChoose" parameterType="map" resultType="Blog">
-        select * from mybatis.blog where 1=1
-    </select>
+    <update id="updateBlog" parameterType="map" >
+        update mybatis.blog
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="author != null">
+                author = #{author},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 
 
