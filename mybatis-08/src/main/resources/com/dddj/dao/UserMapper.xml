@@ -4,11 +4,20 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.dddj.dao.UserMapper">
-    <select id="queryUserById" resultType="user">
+<!--在当前Mapper.xml中使用二级缓存-->
+<!--    <cache-->
+<!--       eviction="FIFO"-->
+<!--       flushInterval="60000"-->
+<!--       size="512"-->
+<!--       readOnly="true"/>-->
+
+    <cache/>
+
+    <select id="queryUserById" resultType="user" useCache="true">
         select * from mybatis.user where id = #{id}
     </select>
-
-    <update id="updateUser" parameterType="user">
+<!--可通过flushCache来使增删改查不刷新缓存-->
+    <update id="updateUser" parameterType="user" flushCache="false">
             update mybatis.user set name = #{name},pwd = #{pwd} where id = #{id}
     </update>
 

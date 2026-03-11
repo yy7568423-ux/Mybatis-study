@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author DDDJ
  **/
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 //无参构造
 @NoArgsConstructor
 @Data
-public class User {
+public class User implements Serializable {
     private int id;
     private String name;
     private String pwd;
