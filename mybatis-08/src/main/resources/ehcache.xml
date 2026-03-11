@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false">
+    <!--
+        diskStore：为缓存路径，ehcache分为内存和磁盘两级，此属性定义磁盘的缓存位置。参数解释如下：
+        user.home - 用户主目录
+        user.dir  - 用户当前工作目录
+        java.io.tmpdir - 默认临时文件路径
+    -->
+    <diskStore path="./tmpdir/Tmp_EhCache"/>
+
+    <!--
+        defaultCache：默认缓存策略，当ehcache找不到定义的缓存时，则使用这个缓存策略。只能定义一个。
+    -->
+    <defaultCache
+            eternal="false"
+            maxElementsInMemory="10000"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="1800"
+            timeToLiveSeconds="259200"
+            memoryStoreEvictionPolicy="LRU"/>
+
+    <!--
+        name: 缓存名称，用于在代码中精准引用该缓存实例。
+        maxElementsInMemory: 内存中允许缓存的最大对象数目。
+        maxElementsOnDisk: 硬盘中允许缓存的最大对象个数。
+        eternal: 对象是否永久有效，一旦设置为true，timeout相关配置将不起作用。
+        overflowToDisk: 当内存缓存达到maxElementsInMemory上限时，是否将对象保存到磁盘。
+        timeToIdleSeconds: 设置对象在失效前的允许闲置时间（单位：秒）。仅当eternal=false时生效，默认值为0（即永不过期）。
+        timeToLiveSeconds: 设置对象从创建到失效前允许存活的总时间（单位：秒）。仅当eternal=false时生效。
+        diskPersistent: 是否缓存虚拟机重启期数据，即磁盘缓存是否在虚拟机重启后依然保留。默认值为false。
+        diskSpoolBufferSizeMB: 此参数设置DiskStore（磁盘缓存）的缓冲区大小，默认是30MB。每个Cache都应该有自己的一个缓冲区。
+        diskExpiryThreadIntervalSeconds: 磁盘失效线程运行时间间隔，默认是120秒。
+        memoryStoreEvictionPolicy: 当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存。
+            可选策略有：
+            LRU (Least Recently Used)：最近最少使用，默认策略，优先清理最长时间未被访问的元素。
+            FIFO (First In First Out)：先进先出，优先清理最早进入缓存的元素。
+            LFU (Less Frequently Used)：最少访问次数，优先清理历史访问次数最少的元素。
+        clearOnFlush: 内存数量达到最大时是否主动清除缓存。
+    -->
+    <cache
+            name="cloud_user"
+            eternal="false"
+            maxElementsInMemory="5000"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="1800"
+            timeToLiveSeconds="1800"
+            memoryStoreEvictionPolicy="LRU"/>
+</ehcache>
